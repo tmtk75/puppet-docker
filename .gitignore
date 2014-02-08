@@ -7,3 +7,6 @@ modules/
 Gemfile.lock
 Puppetfile.lock
 
+boot2docker.iso
+boot2docker.vmdk
+

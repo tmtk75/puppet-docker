@@ -1,6 +1,23 @@
 TARGET: install
 
-install: ./modules/vagrant
+up: ./boot2docker.vmdk
+	./bin/boot2docker up
+
+stop: ./boot2docker.vmdk
+	./bin/boot2docker stop
+
+install: ./boot2docker.vmdk
+
+./boot2docker.vmdk: ./bin/boot2docker ./bin/docker
+	./bin/boot2docker init
+
+./bin/boot2docker: ./bin/librarian-puppet
+	curl -s https://raw.github.com/steeve/boot2docker/master/boot2docker > ./bin/boot2docker
+	chmod +x ./bin/boot2docker
+
+./bin/docker:
+	curl -o ./bin/docker http://get.docker.io/builds/Darwin/x86_64/docker-latest
+	chmod +x ./bin/docker
 
 ./bin/librarian-puppet:
 	bundle install --binstubs --path .bundle/vendor
@@ -12,5 +29,5 @@ update:
 	./bin/librarian-puppet update
 
 clean:
-	rm -rf .bundle bin modules *.lock
+	rm -rf .librarian .tmp .bundle bin modules *.lock
 
