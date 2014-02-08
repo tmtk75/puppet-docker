@@ -1,6 +1,6 @@
 TARGET: install
 
-up: ./boot2docker.vmdk
+up: ./boot2docker.vmdk virtualbox
 	./bin/boot2docker up
 
 stop: ./boot2docker.vmdk
@@ -19,10 +19,13 @@ install: ./boot2docker.vmdk
 	curl -o ./bin/docker http://get.docker.io/builds/Darwin/x86_64/docker-latest
 	chmod +x ./bin/docker
 
+virtualbox: ./bin/puppet ./modules/virtualbox
+	./bin/puppet apply -e 'include virtualbox' --modulepath modules
+
 ./bin/librarian-puppet:
 	bundle install --binstubs --path .bundle/vendor
 
-./modules/vagrant: ./bin/librarian-puppet
+./modules/virtualbox: ./bin/librarian-puppet
 	./bin/librarian-puppet install
 
 update:
