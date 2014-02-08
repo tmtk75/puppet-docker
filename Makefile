@@ -20,7 +20,7 @@ install: ./boot2docker.vmdk
 	chmod +x ./bin/docker
 
 virtualbox: ./bin/puppet ./modules/virtualbox
-	./bin/puppet apply -e 'include virtualbox' --modulepath modules
+	sudo -E ./bin/puppet apply -e 'include virtualbox' --modulepath modules
 
 ./bin/librarian-puppet:
 	bundle install --binstubs --path .bundle/vendor
