@@ -1,25 +1,23 @@
 TARGET: install
 
-up: ./boot2docker.vmdk virtualbox
-	./bin/boot2docker up
+up: ./boot2docker.vmdk /usr/bin/VBoxManage
+	/usr/local/bin/boot2docker up
 
-stop: ./boot2docker.vmdk
-	./bin/boot2docker stop
+stop: ./boot2docker.vmdk /usr/bin/VBoxManage
+	/usr/local/bin/boot2docker stop
 
 install: ./boot2docker.vmdk
 
-./boot2docker.vmdk: ./bin/boot2docker ./bin/docker
-	./bin/boot2docker init
+./boot2docker.vmdk: /usr/local/bin/boot2docker /usr/local/bin/docker /usr/bin/VBoxManage
+	/usr/local/bin/boot2docker init
 
-./bin/boot2docker: ./bin/librarian-puppet
-	curl -s https://raw.github.com/steeve/boot2docker/master/boot2docker > ./bin/boot2docker
-	chmod +x ./bin/boot2docker
+/usr/local/bin/boot2docker:
+	brew install boot2docker
 
-./bin/docker:
-	curl -o ./bin/docker http://get.docker.io/builds/Darwin/x86_64/docker-latest
-	chmod +x ./bin/docker
+/usr/local/bin/docker:
+	brew install docker
 
-virtualbox: ./bin/puppet ./modules/virtualbox
+/usr/bin/VBoxManage: ./bin/librarian-puppet ./modules/virtualbox
 	sudo -E ./bin/puppet apply -e 'include virtualbox' --modulepath modules
 
 ./bin/librarian-puppet:
@@ -27,9 +25,6 @@ virtualbox: ./bin/puppet ./modules/virtualbox
 
 ./modules/virtualbox: ./bin/librarian-puppet
 	./bin/librarian-puppet install
-
-update:
-	./bin/librarian-puppet update
 
 clean:
 	rm -rf .librarian .tmp .bundle bin modules *.lock
