@@ -1,14 +1,14 @@
 TARGET: install
 
-up: ./boot2docker.vmdk /usr/bin/VBoxManage
+up: ./boot2docker.vmdk
 	/usr/local/bin/boot2docker up
 
-stop: ./boot2docker.vmdk /usr/bin/VBoxManage
+stop: ./boot2docker.vmdk
 	/usr/local/bin/boot2docker stop
 
 install: ./boot2docker.vmdk
 
-./boot2docker.vmdk: /usr/local/bin/boot2docker /usr/local/bin/docker /usr/bin/VBoxManage
+./boot2docker.vmdk: /usr/local/bin/boot2docker /usr/local/bin/docker
 	/usr/local/bin/boot2docker init
 
 /usr/local/bin/boot2docker:
@@ -16,6 +16,8 @@ install: ./boot2docker.vmdk
 
 /usr/local/bin/docker:
 	brew install docker
+
+virtualbox: /usr/bin/VBoxManage
 
 /usr/bin/VBoxManage: ./bin/librarian-puppet ./modules/virtualbox
 	sudo -E ./bin/puppet apply -e 'include virtualbox' --modulepath modules
