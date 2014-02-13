@@ -11,15 +11,27 @@ class docker::centos::install {
   }
 }
 
+class docker::centos::config {
+  file { '/etc/sysconfig/docker':
+    ensure  => file,
+    owner   => 'root',
+    group   => 'root',
+    mode    =>  0644,
+    content => 'other_args="-H tcp://0.0.0.0:4243 -H unix:///var/run/docker.sock"'
+  }
+}
+
 class docker::centos::service {
   service { docker:
     ensure => running,
+    subscribe => Class[docker::centos::config]
   }
 }
 
 class docker::centos {
   include install
+  include config
   include service
-  Class[install] -> Class[service]
+  Class[install] -> Class[config] ->Class[service]
 }
 
